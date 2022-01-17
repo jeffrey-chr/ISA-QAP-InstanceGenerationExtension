@@ -1,0 +1,5 @@
+# Instances generated - put them in the Instances submodule to be used later
+output/
+
+# Config text file
+linkdir.txt
