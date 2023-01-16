@@ -33,7 +33,7 @@ function [dist,xy] = genDistEuclidean(n,K,m,cc)
             dist(i,j) = norm(xy(i,:)-xy(j,:));
         end
     end
-    
+
     % Round the distances
     dist = round(dist);
 end

@@ -1,4 +1,4 @@
-function [obj] = qapObjectiveStutzle(x,target,model,features,params)
+function [obj] = qapObjectiveHybrid(x,target,model,features,params)
 %QAPOBJECTIVESTUTZLE
 
     ntrials = 20;
@@ -7,7 +7,7 @@ function [obj] = qapObjectiveStutzle(x,target,model,features,params)
     dists = -ones(ntrials,1);
 
     for i = 1:ntrials
-        dist = genDistEuclidean(n,x(1),x(2),x(3));
+        dist = vector2hybridist(x(4:end));
         %flow = genFlowStructuredPlus(n,x(4),x(5),x(6),x(7));
         flow = genFlowStructuredPlus(n,x(4),x(5),x(6));
         

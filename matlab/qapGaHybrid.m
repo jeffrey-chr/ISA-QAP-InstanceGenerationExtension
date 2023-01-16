@@ -1,4 +1,4 @@
-function [insts, iters] = qapGaStutzleGenerator(target, model, features, params)
+function [insts, iters] = qapGaHybrid(target, model, features, params)
 %QAPGASTUTZLEGENERATOR
 % Genetic representation: Parameters for QAP generating algorithm proposed
 % by Stutzle and Fernandes.
@@ -23,7 +23,7 @@ function [insts, iters] = qapGaStutzleGenerator(target, model, features, params)
     % instances you might not want this to be too large. Experiment to find
     % good values for all these parameters.
     if ~isfield(params, 'gagen')
-        gagen = 10;
+        gagen = 25;
     else
         gagen = params.gagen;
     end
@@ -38,27 +38,28 @@ function [insts, iters] = qapGaStutzleGenerator(target, model, features, params)
     % Bounds on ga variables
     %lb = [ceil(n/10), 20, 200, 10, 10, 0.5, 0.001 ] ;
     %ub = [ceil(2*n/3), 100, 400, 200, 200, 2, 0.2 ] ;
-    lb = [ceil(n/(1*13+2)), 10, 200, 10, 0.5, 0.001 ] ;
-    ub = [ceil(n/(0*13+2)), 100, 400, 200, 8, 0.2 ] ;
+    lb = [10, 0.5, 0.001, zeros(1,n*2) ] ;
+    ub = [200, 8, 0.2, 300*ones(1,n*2) ] ;
 %      lb = [ceil(n/(0.5*13+2)), 39, 299, 29, 4, 0.05 ] ;
 %      ub = [ceil(n/(0.49*13+2)), 41, 301, 31, 5, 0.051 ] ;
-    intcon = [1,2,3];
+    intcon = [4:(3+2*n)];
     
     objparams = struct;
     objparams.n = n;
 
-    options = optimoptions('ga','PopulationSize', gapop, 'PlotFcn', @gaplotscores, 'MaxGenerations', gagen);
+    options = optimoptions('ga','PopulationSize', gapop, 'PlotFcn', @gaplotscores, 'MaxGenerations', gagen, 'CrossoverFcn', 'crossoverscattered');
 
-    [x,~,~,output,~,~] = ga(@(x) qapObjectiveStutzle(x,target,model,features,objparams), 6, [], [], [], [], lb, ub, [], intcon, options);
+    [x,~,~,output,~,~] = ga(@(x) qapObjectiveHybrid(x,target,model,features,objparams), 3+2*n, [], [], [], [], lb, ub, [], intcon, options);
     
     iters = output.generations;
     insts = zeros(10,2*n^2);
     
     % Generate 10 instances with the winning parameters.
     for i = 1:10
-        dist = genDistEuclidean(n,x(1),x(2),x(3));
+        flow = genFlowStructuredPlus(n,x(1),x(2),x(3));
+        dist = vector2hybridist(x(4:end));
         %flow = genFlowStructuredPlus(n,x(4),x(5),x(6),x(7));
-        flow = genFlowStructuredPlus(n,x(4),x(5),x(6));
+        
         insts(i,:) = [dist(:)',flow(:)'];
     end
     

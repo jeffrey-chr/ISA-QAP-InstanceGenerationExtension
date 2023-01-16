@@ -3,3 +3,9 @@ output/
 
 # Config text file
 linkdir.txt
+
+# Plots and other output
+*.eps
+*.csv
+*.mat
+*.fig

@@ -1,7 +1,8 @@
-function [flow, xy] = genFlowStructuredPlus(n,d,a,b,p)
+function [flow, xy] = genFlowStructuredPlus(n,d,b,p)
 %GENFLOWSTRUCTURED Summary of this function goes here
 %   Detailed explanation goes here
 flow = -ones(n);
+a = 100^(1/b);
 
 % Generate a point in a square with side length 100 for each facility
 % (These do NOT affect the distance matrix for the problem!)
