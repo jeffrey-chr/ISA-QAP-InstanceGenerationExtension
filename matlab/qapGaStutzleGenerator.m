@@ -23,7 +23,7 @@ function [insts, iters] = qapGaStutzleGenerator(target, model, features, params)
     % instances you might not want this to be too large. Experiment to find
     % good values for all these parameters.
     if ~isfield(params, 'gagen')
-        gagen = 10;
+        gagen = 2;
     else
         gagen = params.gagen;
     end

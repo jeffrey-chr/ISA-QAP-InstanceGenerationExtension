@@ -38,7 +38,7 @@ targets = fillpath(targets,1.2);
 % Targets to be aimed at in this execution of the script
 % Run a few at a time to avoid losing lots of time to crashes
 %indices = 1:length(targets);
-indices = 1;
+indices = 14;
 %indices = [10];
 %targets = [1,-2.5;0,-2;-1,-0.75;-2,0.5;-2.5,2;-2,3.5];
 %indices = [1:6];
@@ -50,17 +50,22 @@ features = qap_DefineFeatures();
 % generatorFunction = @qapGaUnstructured;
 % instName = 'gaUnstr'
 %OR
-generatorFunction = @qapGaStutzleGenerator;
+generatorFunction = @qapGaFixFlow;
 instName = 'gaFixFlow';
 
 % generatorFunction = @qapGaHybrid;
 % instName = 'gaHybrid';
 
 % parameters for generation
+n = 75;
+flows = genFlowRandom(n,rand*0.6+0.2,rand*6+1);
+%flows = genFlowStructuredPlus(n,rand*40+10,rand*6+1,0.05);
 params = struct;
-params.instPerTarget = 1;
+params.instPerTarget = 5;
 params.instdir = '..\..\Instances';
-params.instsize = 75;
+params.instsize = n;
+params.flows = flows;
+params.gagen = 5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -100,13 +105,27 @@ for t = indices
     [bestinsts{t},iters{t}] = generatorFunction(targets(t,:), model, features, params);
 
     for i = 1:params.instPerTarget
-        bestprojs{t,i} = vector2proj(bestinsts{t}(i,:),model,features);
+
+        x = bestinsts{t}(i,:);
+
+        locs = reshape(x,2,n)';
+
+        dist = zeros(n);
+    
+        for ii = 1:n
+            for jj= ii+1:n
+                dist(ii,jj) = floor(norm(locs(ii,:) - locs(jj,:),2));
+                dist(jj,ii) = dist(ii,jj);
+            end
+        end
+
+        bestprojs{t,i} = qap2proj(dist,flows,model,features);
         figure(fig);
         targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
         genplt{t} = scatter(bestprojs{t,i}(1), bestprojs{t,i}(2),25,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
         
-        [mat1, mat2] = vector2qap(bestinsts{t}(i,:));
-        qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),mat1,mat2);
+        %[mat1, mat2] = vector2qap(bestinsts{t}(i,:));
+        qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),dist,flows);
     end
 end
 xlim = [-4 4];
