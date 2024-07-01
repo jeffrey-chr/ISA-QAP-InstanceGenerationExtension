@@ -43,4 +43,23 @@ if %argC% LEQ 1 (
 REM Write the location of features in the second line of linkdir.txt
 echo %locf% >> .\linkdir.txt
 
+REM find generators
+if %argC% LEQ 1 (
+    if exist ..\InstanceGeneration\Generators (
+        cd ..\InstanceGeneration\
+        for /f %%i in ('cd') do set locig=%%i
+        cd %mypath%
+        echo Setting instance generation folder location as %locig%
+    ) else (
+        set /P locig="Enter location of instance generation folder containing /matlab/defineFeatures.m, etc: " 
+    )
+) else (
+    set locig=%2
+    echo Setting instance generation folder location as %locf%
+)
+
+REM Write the location of instance generation in the second line of linkdir.txt
+echo %locig% >> .\linkdir.txt
+
+
 cd %curdir%
