@@ -27,9 +27,10 @@ g = @(x) x + randi(x/2);
 instTypes = {
               %[2,5], 8;
               %[2,6], 8;
-              [3,3,3,3], @() genDistHypercube(3,4,20), @(t) genFlowTcycle([3,3,3,3],20,g,t), 'hyper', 20;
-              [8,10], @() genDistManhattan(80,8), @(t) genFlowTcycle([8,10],20,g,t), 'manhat', 20;
-              [8,10], @() genDistDrexx(10,8), @(t) genFlowTcycle([8,10],20,g,t), 'drez', 20;
+              [3,3,3,3], @() genDistHypercube(3,4,20), @(t) genFlowTcycle([3,3,3,3],20,g,t), 'hyper', 30;
+              [8,10], @() genDistDrexx(10,8), @(t) genFlowTcycle([8,10],20,g,t), 'drez', 30;
+              
+              %[8,10], @() genDistManhattan(80,8), @(t) genFlowTcycle([8,10],20,g,t), 'manhat', 20;
               %[2,7], 8;
               %[5,3], 8;
             };
