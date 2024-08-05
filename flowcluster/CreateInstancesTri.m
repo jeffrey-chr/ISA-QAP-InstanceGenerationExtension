@@ -34,7 +34,7 @@ instTypes = {
               %[2,7], 8;
               %[5,3], 8;
             };
-        
+nw = 200:25:925;
 for i = 1:size(instTypes,1)
     ninst = instTypes{i,5};
     for count = 1:ninst
@@ -48,7 +48,8 @@ for i = 1:size(instTypes,1)
             edges = edges + n / dims(j) * (dims(j)-1);
         end
         tmp = (count-1)/(ninst-1);
-        ntri = floor(edges + tmp*(edges*3));
+        %ntri = floor(edges + tmp*(edges*3));
+        ntri = nw(count);
 
         dist = instTypes{i,2}();
         flow = instTypes{i,3}(ntri);

@@ -43,7 +43,7 @@ for i = 1:size(instTypes,1)
         for j = 2:length(dims)
             n = n * dims(j);
         end
-        nseeds = 5+count;
+        nseeds = 15+count;
 
         dist = instTypes{i,2}();
         flow = instTypes{i,3}(nseeds);
