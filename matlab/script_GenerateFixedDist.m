@@ -52,22 +52,40 @@ features = qap_DefineFeatures();
 % generatorFunction = @qapGaUnstructured;
 % instName = 'gaUnstr'
 %OR
-generatorFunction = @qapGaFixFlow;
-instName = 'gaFixFlow';
+generatorFunction = @qapGaGenBoth;
+instName = 'gaFixDist';
 
-% generatorFunction = @qapGaHybrid;
-% instName = 'gaHybrid';
+n = 10;
+K = 10;
+m = 40;
+cc = 300;
 
-% parameters for generation
-n = 75;
-flows = genFlowRandom(n,rand*0.6+0.2,rand*6+1);
-%flows = genFlowStructuredPlus(n,rand*40+10,rand*6+1,0.05);
+
+instPerTarget = 50;
+bestPerTarget = 5;
+
 params = struct;
-params.instPerTarget = 5;
 params.instdir = '..\..\Instances';
 params.instsize = n;
-params.flows = flows;
 params.gagen = 5;
+
+params.flowgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
+params.lb = [10, 1, 0];
+params.ub = [50, 7, 0.25];
+params.intcon = [1,2];
+
+params2 = struct;
+params2.instdir = '..\..\Instances';
+params2.instsize = n;
+params2.gagen = 5;
+
+params2.distgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
+params2.lb = [10, 1, 0];
+params2.ub = [50, 7, 0.25];
+params2.intcon = [1,2];
+
+distances = genDistEuclidean(n,K,m,cc);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -104,31 +122,42 @@ for t = indices
     
     fprintf("Target point: %f, %f\n",targets(t,1),targets(t,2))
 
-    [bestinsts{t},iters{t}] = generatorFunction(targets(t,:), model, features, params);
+    params.distgen = @(x) distances;
 
-    for i = 1:params.instPerTarget
+    [xout] = generatorFunction(targets(t,:), model, features, params);
 
-        x = bestinsts{t}(i,:);
+    quality = Inf*ones(instPerTarget,1);
+    flows = cell(instPerTarget,1);
+    projs = cell(instPerTarget,1);
 
-        locs = reshape(x,2,n)';
+    for i = 1:instPerTarget
+        % generate instance using identified parameters
+        flows{i} = genFlowStructuredPlus(n, xout(1), xout(2), xout(3));
+        
+        projs{i} = qap2proj(distances,flows{i},model,features);
 
-        dist = zeros(n);
-    
-        for ii = 1:n
-            for jj= ii+1:n
-                dist(ii,jj) = floor(norm(locs(ii,:) - locs(jj,:),2));
-                dist(jj,ii) = dist(ii,jj);
-            end
-        end
+        quality(i) = norm(projs{i}-targets(t));
+    end
 
-        bestprojs{t,i} = qap2proj(dist,flows,model,features);
+    [~,sqidx] = sort(quality);
+
+    for i = 1:bestPerTarget
+        %bestprojs{t,i} = qap2proj(distances,flows{sqidx(i)},model,features);
+        bestprojs{t,i} = projs{sqidx(i)};
+
         figure(fig);
         targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
         genplt{t} = scatter(bestprojs{t,i}(1), bestprojs{t,i}(2),25,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
+
+        %qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),distances,flows{sqidx(i)});
+    end
+
+    
+
+        
         
         %[mat1, mat2] = vector2qap(bestinsts{t}(i,:));
-        qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),dist,flows);
-    end
+        %
 end
 xlim = [-4 4];
 ylim = [-4 4];
