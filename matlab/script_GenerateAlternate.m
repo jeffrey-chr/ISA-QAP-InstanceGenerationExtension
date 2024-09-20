@@ -39,7 +39,7 @@ targets = fillpath(targets,1.2);
 %targets = [targets; 0, -3];
 % Targets to be aimed at in this execution of the script
 % Run a few at a time to avoid losing lots of time to crashes
-indices = 1:length(targets);
+indices = 1:4:length(targets);
 %indices = 14;
 %indices = [10];
 %targets = [1,-2.5;0,-2;-1,-0.75;-2,0.5;-2.5,2;-2,3.5];
@@ -55,7 +55,7 @@ features = qap_DefineFeatures();
 generatorFunction = @qapGaGenBoth;
 instName = 'gaFixDist';
 
-n = 25;
+n = 10;
 K = 10;
 m = 40;
 cc = 300;
@@ -69,10 +69,15 @@ params.instdir = '..\..\Instances';
 params.instsize = n;
 params.gagen = 5;
 
-params.flowgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
-params.lb = [10, 1, 0];
-params.ub = [50, 7, 0.25];
-params.intcon = [1,2];
+%params.flowgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
+%params.lb = [10, 1, 0];
+%params.ub = [50, 7, 0.25];
+%params.intcon = [1,2];
+
+params.flowgen = @(x) genFlowCustom(n, x(1), x(2), x(3), x(4),x(5));
+params.lb = [0,0,0,0,0];
+params.ub = [1,1,1,1,1];
+params.intcon = [];
 
 params2 = struct;
 params2.instdir = '..\..\Instances';
@@ -127,13 +132,15 @@ for t = indices
 
     [xout] = generatorFunction(targets(t,:), model, features, params);
 
+    xout
+
     quality = Inf*ones(instPerTarget,1);
     flows = cell(instPerTarget,1);
     projs = cell(instPerTarget,1);
 
     for i = 1:instPerTarget
         % generate instance using identified parameters
-        flows{i} = genFlowStructuredPlus(n, xout(1), xout(2), xout(3));
+        flows{i} = params.flowgen(xout);
         
         projs{i} = qap2proj(params.distgen(),flows{i},model,features);
 
@@ -150,8 +157,10 @@ for t = indices
         targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
         genplt{t} = scatter(bestprojs{t,i}(1), bestprojs{t,i}(2),25,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
 
-        %qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),distances,flows{sqidx(i)});
+        qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),params.distgen(),flows{i});
     end
+
+    if false
 
     params2.flowgen = @(x) flows{sqidx(1)};
     
@@ -181,10 +190,10 @@ for t = indices
         figure(fig);
         genplt2{t} = scatter(bestprojs{t,i}(1), bestprojs{t,i}(2),25,'^','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
 
-        %qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),distances,flows{sqidx(i)});
+        qap_writeFile(strcat(genfilesdir,'ZQAP',instName,'_',num2str(t),"_",num2str(i)),dists{i},params2.flowgen());
     end
         
-        
+    end
         %[mat1, mat2] = vector2qap(bestinsts{t}(i,:));
         %
 end
