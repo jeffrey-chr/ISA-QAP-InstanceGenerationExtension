@@ -15,9 +15,9 @@ end
 
 if ~exist('qap_DefineFeatures','file')
     oldpath = path;
-    path(oldpath,strcat(featdir,'\matlab'));
+    path(oldpath,strcat(featdir,'/matlab'));
     oldpath = path;
-    path(oldpath,strcat(featdir,'\matlab\analyseqap'));
+    path(oldpath,strcat(featdir,'/matlab/analyseqap'));
 end
 if ~exist('qap_DefineFeatures','file')
     error('Failed to load feature analysis directory');
@@ -27,10 +27,10 @@ end
 % configure
 
 % Where to write generated instances
-genfilesdir = ".\output\";
+genfilesdir = "./output/";
 
 % load ISA model
-model = load('..\..\ISA\QAPdata_combined\model.mat');
+model = load('../../ISA/QAPdata_combined/model.mat');
 
 % define target points:
 % Get boundary of projected instance space
@@ -58,7 +58,7 @@ features = qap_DefineFeatures();
 generatorFunction = @qapGaGenBoth;
 instName = 'gaFhypD';
 
-[A,B] = qap_readFile(strcat(instdir,'\ProblemData\Hypercube\hyp32_1.dat'));
+[A,B] = qap_readFile(strcat(instdir,'/ProblemData/Hypercube/hyp32_1.dat'));
 distances = A;
 
 % K = 10;
@@ -77,7 +77,7 @@ instPerTarget = 20;
 bestPerTarget = 5;
 
 params = struct;
-params.instdir = '..\..\Instances';
+params.instdir = '../../Instances';
 params.instsize = n;
 params.gagen = 1;
 
