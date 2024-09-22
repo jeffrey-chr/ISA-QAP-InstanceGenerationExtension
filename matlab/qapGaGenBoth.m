@@ -1,4 +1,4 @@
-function [xout] = qapGaGenBoth(target, model, features, params)
+function [xout] = qapGaGenBoth(target, model, features, params, record)
 %QAPGAFIXDIST Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -50,7 +50,7 @@ function [xout] = qapGaGenBoth(target, model, features, params)
     
     options = optimoptions('ga', 'PopulationSize', gapop, 'PlotFcn', @gaplotscores, 'MaxGenerations', gagen);
 
-    [xout,fval,~,output,population,scores] = ga(@(x) qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,features), length(params.lb), [], [], [], [], lb, ub, [], intcon, options);
+    [xout,fval,~,output,population,scores] = ga(@(x) qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,features,record), length(params.lb), [], [], [], [], lb, ub, [], intcon, options);
     
     %mat1 = reshape(x(1:n^2), n, n);
     %mat2 = reshape(x((n^2+1):2*n^2), n, n);

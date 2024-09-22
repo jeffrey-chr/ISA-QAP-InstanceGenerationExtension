@@ -1,8 +1,12 @@
-function [points] = qap2proj(mat1,mat2,model,features)
+function [points] = qap2proj(mat1,mat2,model,features,ntrials)
 %QAP2PROJ
+    if nargin < 5
+        ntrials = 1000;
+    end
+
     fsel = model.featsel.idx;
     
-    feats = qap_MeasureFeatures(mat1,mat2,features,fsel,50);
+    feats = qap_MeasureFeatures(mat1,mat2,features,fsel,ntrials);
     
     % Process the features in the same way as ISA.
     if model.opts.bound.flag

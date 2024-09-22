@@ -81,7 +81,7 @@ function [flow,description] = genFlowCustom(n,clu,clud,cluv,noisef, noises)
     noiseloc = randperm(n*n,floor(n*n*noisefreq));
 
     for i = 1:length(noiseloc)
-        flow(i) = flow(i) + randi(noisestrength);
+        flow(noiseloc(i)) = flow(noiseloc(i)) + randi(noisestrength);
     end
 
 end

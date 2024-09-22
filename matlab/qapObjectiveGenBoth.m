@@ -1,4 +1,4 @@
-function [obj] = qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,features)
+function [obj] = qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,features,record)
 %Q Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -18,12 +18,17 @@ function [obj] = qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,
         point = qap2proj(dist,flow,model,features);
 
         values(i) = norm(point - target);
+
+        % added = record.addIfBetter(values(i), dist, flow);
+        % if added
+        %     fprintf("check...\n");
+        % end
     end
 
     % pick the best ones and set objective value of this generator
     svalues = sort(values);
     best = svalues(1:nToPick);
-
+    
     obj = mean(best);
 
 

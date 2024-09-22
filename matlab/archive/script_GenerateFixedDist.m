@@ -1,8 +1,6 @@
 ufid = fopen('..\linkdir.txt','r');
 uline = strtrim(fgetl(ufid));
 featdir = strtrim(fgetl(ufid));
-instgendir = strtrim(fgetl(ufid));
-instdir = strtrim(fgetl(ufid));
 fclose(ufid);
 
 if ~exist('qap_readFile','file')
@@ -41,9 +39,8 @@ targets = fillpath(targets,1.2);
 %targets = [targets; 0, -3];
 % Targets to be aimed at in this execution of the script
 % Run a few at a time to avoid losing lots of time to crashes
-%indices = [4,6,8,10,15];
-%indices = 1:4:length(targets);
-%indices = 14;
+%indices = 1:length(targets);
+indices = 14;
 %indices = [10];
 %targets = [1,-2.5;0,-2;-1,-0.75;-2,0.5;-2.5,2;-2,3.5];
 %indices = [1:6];
@@ -56,42 +53,39 @@ features = qap_DefineFeatures();
 % instName = 'gaUnstr'
 %OR
 generatorFunction = @qapGaGenBoth;
-instName = 'gaFhypD';
+instName = 'gaFixDist';
 
-[A,B] = qap_readFile(strcat(instdir,'\ProblemData\Hypercube\hyp32_1.dat'));
-distances = A;
-
-% K = 10;
-% m = 40;
-% cc = 300;
-% distances = genDistEuclidean(10,K,m,cc);
-
-
-n = size(distances,1);
+n = 10;
 K = 10;
 m = 40;
 cc = 300;
 
 
-instPerTarget = 20;
+instPerTarget = 50;
 bestPerTarget = 5;
 
 params = struct;
 params.instdir = '..\..\Instances';
 params.instsize = n;
-params.gagen = 1;
+params.gagen = 5;
 
-%params.flowgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
-%params.lb = [10, 1, 0];
-%params.ub = [50, 7, 0.25];
-%params.intcon = [1,2];
+params.flowgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
+params.lb = [10, 1, 0];
+params.ub = [50, 7, 0.25];
+params.intcon = [1,2];
 
-params.flowgen = @(x) genFlowCustom(n, x(1), x(2), x(3), x(4),x(5));
-params.lb = [0,0,0,0,0];
-params.ub = [1,1,1,1,1];
-params.intcon = [];
+params2 = struct;
+params2.instdir = '..\..\Instances';
+params2.instsize = n;
+params2.gagen = 5;
 
-params.distgen = @(x) distances;
+params2.distgen = @(x) genFlowStructuredPlus(n, x(1), x(2), x(3));
+params2.lb = [10, 1, 0];
+params2.ub = [50, 7, 0.25];
+params2.intcon = [1,2];
+
+distances = genDistEuclidean(n,K,m,cc);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -122,20 +116,15 @@ if exist('targetplt','var') == 0
 end
 if exist('genplt','var') == 0
     genplt = cell(length(targets),1);
-    genplt2 = cell(length(targets),1);
 end
-
-tic
 
 for t = indices
     
     fprintf("Target point: %f, %f\n",targets(t,1),targets(t,2))
 
-    record = QapRecord(5);
+    params.distgen = @(x) distances;
 
-    [xout] = generatorFunction(targets(t,:), model, features, params, record);
-
-    xout
+    [xout] = generatorFunction(targets(t,:), model, features, params);
 
     quality = Inf*ones(instPerTarget,1);
     flows = cell(instPerTarget,1);
@@ -143,9 +132,9 @@ for t = indices
 
     for i = 1:instPerTarget
         % generate instance using identified parameters
-        flows{i} = params.flowgen(xout);
+        flows{i} = genFlowStructuredPlus(n, xout(1), xout(2), xout(3));
         
-        projs{i} = qap2proj(params.distgen(),flows{i},model,features,5000);
+        projs{i} = qap2proj(distances,flows{i},model,features);
 
         quality(i) = norm(projs{i}-targets(t));
     end
@@ -160,24 +149,16 @@ for t = indices
         targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
         genplt{t} = scatter(bestprojs{t,i}(1), bestprojs{t,i}(2),25,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
 
-        qap_writeFile(strcat(genfilesdir,instName,'_after_',num2str(t),"_",num2str(i)),params.distgen(),flows{i});
+        %qap_writeFile(strcat(genfilesdir,'QAP',instName,'_',num2str(t),"_",num2str(i)),distances,flows{sqidx(i)});
     end
 
-    % turns out this doesn't work very well. But remember it for some other
-    % project without these dumb fitness landscape features.
-    % for i = 1:record.maxinst
-    %     qap_writeFile(strcat(genfilesdir,instName,'_during_',num2str(t),"_",num2str(i)),record.distances{i},record.flows{i});
-    % 
-    %     proj = qap2proj(record.distances{i},record.flows{i},model,features);
-    % 
-    %     genplt2{t} = scatter(proj(1),proj(2),25,'^','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
-    % end
+    
 
+        
+        
         %[mat1, mat2] = vector2qap(bestinsts{t}(i,:));
         %
 end
-
-toc
-%xlim = [-4 4];
-%ylim = [-4 4];
-%set(findall(gcf,'-property','FontSize'),'FontSize',20);
+xlim = [-4 4];
+ylim = [-4 4];
+set(findall(gcf,'-property','FontSize'),'FontSize',20);
