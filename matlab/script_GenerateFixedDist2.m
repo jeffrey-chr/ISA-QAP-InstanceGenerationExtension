@@ -56,9 +56,9 @@ features = qap_DefineFeatures();
 % instName = 'gaUnstr'
 %OR
 generatorFunction = @qapGaGenBoth;
-instName = 'gaFhypD';
+instName = 'gaFtabD';
 
-[A,B] = qap_readFile(strcat(instdir,'/ProblemData/Hypercube/hyp32_1.dat'));
+[A,B] = qap_readFile(strcat(instdir,'/ProblemData/TaiBGen/xtab30N1.dat'));
 distances = A;
 
 % K = 10;
@@ -175,7 +175,7 @@ for t = indices
 
         %[mat1, mat2] = vector2qap(bestinsts{t}(i,:));
         %
-        print(gcf,'-dpng',strcat('targethyp',num2str(t),'.png'));
+        print(gcf,'-dpng',strcat('targettab',num2str(t),'.png'));
 end
 
 toc
