@@ -1,7 +1,10 @@
-function [outputArg1,outputArg2] = qap_BatchCreate(myid,jobmax)
+function qap_BatchCreate(myid,jobmax)
 %QAP_BATCHCREATE Summary of this function goes here
 %   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+
+    blah = [4,6,8,10,15];
+    indices = blah(myid);
+
+    script_GenerateFixedDist;
 end
 

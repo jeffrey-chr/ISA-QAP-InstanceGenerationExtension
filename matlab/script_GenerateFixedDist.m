@@ -175,6 +175,7 @@ for t = indices
 
         %[mat1, mat2] = vector2qap(bestinsts{t}(i,:));
         %
+        print(gcf,'-dpng',strcat('target',num2str(t),'.png'));
 end
 
 toc
