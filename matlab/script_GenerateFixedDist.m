@@ -1,4 +1,4 @@
-ufid = fopen('..\linkdir.txt','r');
+ufid = fopen('../linkdir.txt','r');
 uline = strtrim(fgetl(ufid));
 featdir = strtrim(fgetl(ufid));
 instgendir = strtrim(fgetl(ufid));
