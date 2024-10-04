@@ -12,7 +12,7 @@ function [xout] = qapGaGenBoth(target, model, features, params, record)
 
     % Population for genetic algorithm
     if ~isfield(params, 'gapop')
-        gapop = 50;
+        gapop = 10;
     else
         gapop = params.gapop;
     end
@@ -21,7 +21,7 @@ function [xout] = qapGaGenBoth(target, model, features, params, record)
     % instances you might not want this to be too large. Experiment to find
     % good values for all these parameters.
     if ~isfield(params, 'gagen')
-        gagen = 25;
+        gagen = 10;
     else
         gagen = params.gagen;
     end
@@ -43,12 +43,21 @@ function [xout] = qapGaGenBoth(target, model, features, params, record)
         intcon = params.intcon;
     end
 
-    otherparams.nToGen = 50;
-    otherparams.nToPick = 10;
+    if ~isfield(params,'nToGen')
+        otherparams.nToGen = 10;
+    else
+        otherparams.nToGen = params.nToGen;
+    end
 
+    if ~isfield(params,'nToPick')
+        otherparams.nToPick = 5;
+    else
+        otherparams.nToPick = params.nToPick;
+    end
     %x0 = randi(maxvalue,gapop,2*n);
     
-    options = optimoptions('ga', 'PopulationSize', gapop, 'PlotFcn', @gaplotscores, 'MaxGenerations', gagen);
+    %options = optimoptions('ga', 'PopulationSize', gapop, 'PlotFcn', @gaplotscores, 'MaxGenerations', gagen);
+    options = optimoptions('ga', 'PopulationSize', gapop, 'MaxGenerations', gagen, 'Display', 'iter');
 
     [xout,fval,~,output,population,scores] = ga(@(x) qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,features,record), length(params.lb), [], [], [], [], lb, ub, [], intcon, options);
     

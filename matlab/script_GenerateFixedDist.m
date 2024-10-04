@@ -34,9 +34,9 @@ model = load('../../ISA/QAPdata_combined/model.mat');
 
 % define target points:
 % Get boundary of projected instance space
-targets = model.cloist.Zedge(1:end,:);
+%targets = model.cloist.Zedge(1:end,:);
 % Put additional targets inside any large gaps
-targets = fillpath(targets,1.2);
+%targets = fillpath(targets,1.2);
 % Add more target points if desired
 %targets = [targets; 0, -3];
 % Targets to be aimed at in this execution of the script
@@ -127,7 +127,7 @@ end
 
 tic
 
-for t = indices
+for t = targetid
     
     fprintf("Target point: %f, %f\n",targets(t,1),targets(t,2))
 
