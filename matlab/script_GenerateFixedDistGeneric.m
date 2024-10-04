@@ -142,7 +142,7 @@ for i = 1:bestPerTarget
     qap_writeFile(strcat(genfilesdir,'evoflow_',outsourcename,'_',num2str(t),"_",num2str(i)),params.distgen(),flows{i});
 end
 
-print(gcf,'-dpng',strcat('targethyp',num2str(t),'.png'));
+print(gcf,'-dpng',strcat('./outplots/','evoflow_',outsourcename,'_',num2str(t),'.png'));
 
 toc
 %xlim = [-4 4];
