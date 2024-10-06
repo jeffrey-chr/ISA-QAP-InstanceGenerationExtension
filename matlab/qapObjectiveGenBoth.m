@@ -28,7 +28,7 @@ function [obj] = qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,
 
     % pick the best ones and set objective value of this generator
     svalues = sort(values);
-    best = svalues(nToSkip:(nToPick+nToSkip));
+    best = svalues((nToSkip+1):(nToPick+nToSkip));
     
     obj = mean(best);
 
