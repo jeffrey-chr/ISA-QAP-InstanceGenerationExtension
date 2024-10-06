@@ -65,6 +65,7 @@ params.intcon = [];
 
 params.nToGen = n2G;
 params.nToPick = n2P;
+params.nToSkip = n2S;
 
 params.distgen = @(x) distances;
 
@@ -114,6 +115,10 @@ record = QapRecord(5);
 
 xout
 
+toc
+
+tic
+
 quality = Inf*ones(instPerTarget,1);
 flows = cell(instPerTarget,1);
 projs = cell(instPerTarget,1);
@@ -145,6 +150,7 @@ end
 print(gcf,'-dpng',strcat('./outplots/','evoflow_',outsourcename,'_',num2str(t),'.png'));
 
 toc
+
 %xlim = [-4 4];
 %ylim = [-4 4];
 %set(findall(gcf,'-property','FontSize'),'FontSize',20);

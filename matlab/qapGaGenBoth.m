@@ -54,10 +54,16 @@ function [xout] = qapGaGenBoth(target, model, features, params, record)
     else
         otherparams.nToPick = params.nToPick;
     end
+
+    if ~isfield(params,'nToSkip')
+        otherparams.nToSkip = 5;
+    else
+        otherparams.nToSkip = params.nToSkip;
+    end
     %x0 = randi(maxvalue,gapop,2*n);
     
     %options = optimoptions('ga', 'PopulationSize', gapop, 'PlotFcn', @gaplotscores, 'MaxGenerations', gagen);
-    options = optimoptions('ga', 'PopulationSize', gapop, 'MaxGenerations', gagen, 'Display', 'iter');
+    options = optimoptions('ga', 'PopulationSize', gapop, 'MaxGenerations', gagen, 'EliteCount', 1, 'Display', 'iter');
 
     [xout,fval,~,output,population,scores] = ga(@(x) qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,features,record), length(params.lb), [], [], [], [], lb, ub, [], intcon, options);
     

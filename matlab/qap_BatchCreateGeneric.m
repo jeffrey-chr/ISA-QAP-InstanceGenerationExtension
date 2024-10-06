@@ -1,4 +1,4 @@
-function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, pickedPerPop, finalPerTarget, pickedPerTarget)
+function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, skippedPerPop, pickedPerPop, finalPerTarget, pickedPerTarget)
 %QAP_BATCHCREATE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,6 +7,7 @@ function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, picke
 
     n2G = instPerPop;
     n2P = pickedPerPop;
+    n2S = skippedPerPop;
 
     instPerTarget = finalPerTarget;
     bestPerTarget = pickedPerTarget;
@@ -60,17 +61,26 @@ function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, picke
         ds{i} = A;
     end
     
+    targets = [-2, 1.5;
+    2, 2.5;
+    2.75,0.75;
+    2.75, -0.75;
+    1.75, -2;
+    0.25,-2.5;
+    -1.5, -2;
+    -2.75,-0.5];
 
-      targets = [-1.5,2; 
-            1,3;
-            2.5,1.5;
-            3, 0.5;
-            3, -1;
-            1.5,-2;
-            0,-2.5;
-            -1.5,-2;
-            -2.75,-1;
-            -2.75,0.5];
+
+      % targets = [-1.5,2; 
+      %       1,3;
+      %       2.5,1.5;
+      %       3, 0.5;
+      %       3, -1;
+      %       1.5,-2;
+      %       0,-2.5;
+      %       -1.5,-2;
+      %       -2.75,-1;
+      %       -2.75,0.5];
 
     targetid = rem(myid-1, length(targets))+1;
 

@@ -7,6 +7,7 @@ function [obj] = qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,
     % generate several instances
 
     nToGen = otherparams.nToGen;
+    nToSkip = otherparams.nToSkip;
     nToPick = otherparams.nToPick;
 
     values = Inf*ones(nToGen,1);
@@ -27,7 +28,7 @@ function [obj] = qapObjectiveGenBoth(x,otherparams,distgen,flowgen,target,model,
 
     % pick the best ones and set objective value of this generator
     svalues = sort(values);
-    best = svalues(1:nToPick);
+    best = svalues(nToSkip:(nToPick+nToSkip));
     
     obj = mean(best);
 
