@@ -134,18 +134,27 @@ end
 
 [~,sqidx] = sort(quality);
 
+targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
+
+for i = (bestPerTarget+1) : instPerTarget
+    p = projs{sqidx(i)};
+    scatter(p(1), p(2),10,'s',MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
+end
+
 for i = 1:bestPerTarget
     %bestprojs{t,i} = qap2proj(distances,flows{sqidx(i)},model,features);
     bestprojs{t,i} = projs{sqidx(i)};
 
     figure(fig);
-    targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
+    
     genplt{t} = scatter(bestprojs{t,i}(1), bestprojs{t,i}(2),25,'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
 
     outsourcename = strrep(sourcename,"_","!");
 
     qap_writeFile(strcat(genfilesdir,'evoflow_',outsourcename,'_',num2str(t),"_",num2str(i)),params.distgen(),flows{i});
 end
+
+
 
 print(gcf,'-dpng',strcat('./outplots/','evoflow_',outsourcename,'_',num2str(t),'.png'));
 
