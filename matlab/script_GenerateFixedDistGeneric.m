@@ -127,7 +127,7 @@ for i = 1:instPerTarget
     % generate instance using identified parameters
     flows{i} = params.flowgen(xout);
     
-    projs{i} = qap2proj(params.distgen(),flows{i},model,features,5000);
+    projs{i} = qap2proj(params.distgen(),flows{i},model,features);
 
     quality(i) = norm(projs{i}-targets(t));
 end
