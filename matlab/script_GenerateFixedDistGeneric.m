@@ -129,7 +129,7 @@ for i = 1:instPerTarget
     
     projs{i} = qap2proj(params.distgen(),flows{i},model,features);
 
-    quality(i) = norm(projs{i}-targets(t));
+    quality(i) = norm(projs{i}-targets(t,:));
 end
 
 [~,sqidx] = sort(quality);
@@ -138,7 +138,7 @@ targetplt{t} = scatter(targets(t,1), targets(t,2), 120,'p','MarkerEdgeColor',[0 
 
 for i = (bestPerTarget+1) : instPerTarget
     p = projs{sqidx(i)};
-    scatter(p(1), p(2),10,'s',MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
+    scatter(p(1), p(2),25,'s','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',hsv2rgb([t/size(targets,1),0.75,0.7]));
 end
 
 for i = 1:bestPerTarget
