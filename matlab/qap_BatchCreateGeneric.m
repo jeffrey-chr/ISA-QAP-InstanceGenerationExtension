@@ -48,6 +48,9 @@ function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, skipp
      "/ProblemData/Hypercube/hyp64_3.dat";
      "/ProblemData/tinytest/tiny9.dat"];
     
+    firstDist = 
+    [true;true;false;true;true;false;true;true];
+
     nRealSources = 7;
 
     level = wildcardPattern + "/";
@@ -57,8 +60,12 @@ function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, skipp
 
     ds = cell(length(sources),1);
     for i = 1:length(sources)
-        [A,~] = qap_readFile(strcat(instdir,sources(i)));
-        ds{i} = A;
+        [A,B] = qap_readFile(strcat(instdir,sources(i)));
+        if firstDist(i)
+            ds{i} = A;
+        else
+            ds{i} = B;
+        end
     end
     
     targets = [-2, 1.5;
