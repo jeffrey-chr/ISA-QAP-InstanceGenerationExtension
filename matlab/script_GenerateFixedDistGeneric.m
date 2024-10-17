@@ -151,7 +151,7 @@ for i = 1:bestPerTarget
 
     outsourcename = strrep(sourcename,"_","!");
 
-    qap_writeFile(strcat(genfilesdir,'evoflow_',outsourcename,'_',num2str(t),"_",num2str(i)),params.distgen(),flows{i},'.dat');
+    qap_writeFile(strcat(genfilesdir,'evoflow_',outsourcename,'_',num2str(t),"_",num2str(i),'.dat'),params.distgen(),flows{i});
 end
 
 

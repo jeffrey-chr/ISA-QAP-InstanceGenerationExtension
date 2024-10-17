@@ -48,8 +48,7 @@ function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, skipp
      "/ProblemData/Hypercube/hyp64_3.dat";
      "/ProblemData/tinytest/tiny9.dat"];
     
-    firstDist = 
-    [true;true;false;true;true;false;true;true];
+    firstDist = [true;true;false;true;true;false;true;true];
 
     nRealSources = 7;
 
