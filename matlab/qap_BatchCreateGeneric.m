@@ -46,11 +46,12 @@ function qap_BatchCreateGeneric(myid,gagenerations, gapopsize, instPerPop, skipp
      "/ProblemData/StuFerGen/stf60er1.dat";
      "/ProblemData/Drezner/dre72.dat";
      "/ProblemData/Hypercube/hyp64_3.dat";
+     "/ProblemData/StuFerGen/stf100ep3.dat";
      "/ProblemData/tinytest/tiny9.dat"];
     
-    firstDist = [true;true;false;true;true;false;true;true];
+    firstDist = [true;true;false;true;true;false;true;true;true];
 
-    nRealSources = 7;
+    nRealSources = 8;
 
     level = wildcardPattern + "/";
     pat = asManyOfPattern(level);
